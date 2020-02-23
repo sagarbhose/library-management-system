@@ -1,0 +1,117 @@
+class Registerpage:
+
+  def register(self):
+    self.name=raw_input("Enter your name")
+    self.address=raw_input("Enter address")
+    self.age=int(input("Enter age"))
+    self.mobile=int(input("Enter mobile no."))
+    self.username = raw_input("enter username")
+    self.password = raw_input("Enter password")
+    import sqlite3
+    conn=sqlite3.connect('text.db')
+    cursor=conn.cursor()
+    table = "CREATE TABLE INFODATA(NAME TEXT,ADDRESS TEXT,AGE INT,MOBILE INT,USERNAME TEXT,PASSWORD TEXT)"
+    cursor.execute(table)
+    insert = "INSERT INTO INFODATA(NAME,ADDRESS,AGE,MOBILE,USERNAME,PASSWORD) VALUES(?,?,?,?,?,?);"
+    cursor.execute(insert,(self.name, self.address, self.age, self.mobile, self.username, self.password))
+    conn.commit()
+
+class login:
+
+    def logininput(self):
+      self.username_in=raw_input("Enter the username")
+      self.password_in=raw_input("enter the password")
+
+
+    def verification(self):
+      import sqlite3
+      conn=sqlite3.connect('text.db')
+      cursor=conn.cursor()
+      verify=('SELECT * FROM INFODATA WHERE USERNAME=? and PASSWORD=?')
+      cursor.execute(verify,[(self.username_in),(self.password_in)])
+      result=cursor.fetchall()
+      if result:
+        print"welcome"
+        return 0
+      else:
+        print"invalid username or password"
+class books:
+
+    def insertbooks(self):
+      import sqlite3
+      conn = sqlite3.connect('booksdata.db')
+      cursor = conn.cursor()
+      booktable = "CREATE TABLE BOOKS(ID PRIMARYKEY ,BOOKNAME TEXT )"
+      cursor.execute(booktable)
+      print"ENTER THE ID AND BOOKSNAMES YOU WANT TO INSERT"
+      print("ENTER ID")
+      self.ID=int(input())
+      print("ENTER BOOK NAME")
+      self.bookname=raw_input()
+      insertbooks = "INSERT INTO BOOKS(ID,BOOKNAME) VALUES(?,?);"
+      cursor.execute(insertbooks,(self.ID,self.bookname))
+      conn.commit()
+
+while(1):
+  print"1.admin"
+  print"2.student"
+  print"3.librarian"
+  print"4.exit"
+  x=int(input("enter the choice"))
+  if x==1:
+    print("**WELCOME ADMIN PLZ LOGIN TO CONTINUE**")
+    f=raw_input("Enter username")
+    g=raw_input("Enter password")
+    if(f=="admin" and g=="password"):
+      call=Registerpage()
+      logincall=login()
+      bookscall=books()
+      print"LOgin sucessfull"
+      print("1.register a new student")
+      print("2.add books")
+      print("3.exit")
+      y=int(input("Enter the choice"))
+      if(y==1):
+        call.register()
+      if(y==2):
+        bookscall.insertbooks()
+      if(y==3):
+        break
+    else:
+      print"username and password is incorrect admin"
+  if x==2:
+      print"**WELCOME STUDENT PLZ LOGIN FIRST**"
+      print"ENTER USERNAME and PASSWORD"
+      logincall = login()
+      logincall.logininput()
+      q=logincall.verification()
+      if(q==0):
+        print"1.availability of book"
+        print"2.fine status(not working)"
+        print"3.reissuing book(not working)"
+        print"4.issued book status(not working)"
+        e=int(input())
+        if(e==1):
+          bookname_in=raw_input("Enter the books to be search")
+          import sqlite3
+          conn=sqlite3.connect('booksdata.db')
+          cursor=conn.cursor()
+          verify='SELECT *FROM BOOKS WHERE BOOKNAME=?'
+          cursor.execute(verify,[(bookname_in)])
+          reslut=cursor.fetchall()
+          if(reslut):
+            print"Book available"
+          else:
+            print"BOOK Unavailable"
+
+  if x==3:
+      print("**WELCOME LIBRABIAN**")
+      print"1.adding book"
+      print"2.deleting book"
+      r=int(input())
+      bookscall=books()
+      if(r==1):
+        bookscall.insertbooks()
+
+  if x==4:
+    break
